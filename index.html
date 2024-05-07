@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SMT Close Form</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-bottom: 5px;
+    }
+    select, input[type="text"] {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #8b0000; /* Dark red border */
+      border-radius: 3px;
+      font-size: 16px;
+      background-color: #ffe6e6; /* Light red background */
+      color: #8b0000; /* Dark red text */
+    }
+    input[type="submit"] {
+      padding: 10px 20px;
+      background-color: #8b0000; /* Dark red button */
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    input[type="submit"]:hover {
+      background-color: #a60000; /* Slightly lighter red on hover */
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>SMT Close Form</h2>
+  <form id="smtForm" method="POST">
+    <label for="requestType">Request Type</label>
+    <select id="requestType" name="requestType" required>
+      <option value="request">request</option>
+      <option value="transfers">transfers</option>
+      <option value="complaint">complaint</option>
+    </select>
+    
+    <label for="vgNumber">VG Number</label>
+    <input type="text" id="vgNumber" name="vgNumber" required>
+    
+    <label for="issueId">Issue ID</label>
+    <input type="number" id="issueId" name="issueId" required>
+    
+    <input type="submit" value="Submit">
+  </form>
+</div>
+<script>
+    
+    document
+  .getElementById("smtForm")
+  .addEventListener("submit", async function (event) {
+    event.preventDefault(); // Prevent default form submission
+
+    
+    const formData = {
+      request_type: document.getElementById("requestType").value,
+      vgnumber: document.getElementById("vgNumber").value,
+      issue_id: document.getElementById("issueId").value,
+    };
+    console.log("Stringified data:", JSON.stringify(formData));
+    try {
+      const response = await fetch("http://localhost:8000/delete", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(formData),
+      });
+      
+      if (response.ok) {
+        console.log("Row deleted successfully");
+      } else {
+        const errorMessage = await response.text();
+        alert("Error deleting row from database: " + errorMessage);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("An error occurred while deleting row from database");
+    }
+  });
+
+</script>
+</body>
+</html>
